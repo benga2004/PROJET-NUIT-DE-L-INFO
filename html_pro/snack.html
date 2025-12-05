@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linux VS Windows - Snake Game | Unit836</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #00f2ff;
+    --secondary-color: #667eea;
+    --accent-color: #764ba2;
+    --dark-bg: #0b0d10;
+    --text-primary: #e6eef8;
+    --text-secondary: #a0aec0;
+}
+
+body {
+    font-family: 'Inter', 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    min-height: 100vh;
+}
+
+/* NAVBAR */
+header {
+    width: 100%;
+    background: rgba(11, 13, 16, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.5px;
+}
+
+.logo span {
+    color: var(--primary-color);
+    font-weight: 800;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links li a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.nav-links li a:hover {
+    color: var(--primary-color);
+    background: rgba(0, 242, 255, 0.05);
+}
+
+/* GAME HEADER */
+h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin: 2rem 0 1rem;
+    font-weight: 800;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* GAME CONTAINER */
+#gameContainer {
+    background: rgba(17, 17, 17, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+    margin-top: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+#gameContainer:hover {
+    box-shadow: 0 16px 64px rgba(102, 126, 234, 0.3);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+#gameCanvas {
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    display: block;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#score {
+    text-align: center;
+    margin-top: 1.25rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-shadow: 0 2px 8px rgba(0, 242, 255, 0.3);
+}
+
+/* GAME OVER */
+#gameOver {
+    display: none;
+    margin-top: 2rem;
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    color: #222;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    max-width: 400px;
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#gameOver h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #667eea;
+}
+
+#gameOver p {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+#restartBtn {
+    margin-top: 1.5rem;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: 1.125rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+#restartBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(102, 126, 234, 0.5);
+}
+
+#restartBtn:active {
+    transform: translateY(0);
+}
+
+/* INSTRUCTIONS */
+.instructions {
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    max-width: 500px;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .nav-links li a {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        margin: 1.5rem 1rem 0.75rem;
+    }
+
+    #gameContainer {
+        padding: 1.5rem;
+    }
+
+    #gameCanvas {
+        max-width: 100%;
+        height: auto;
+    }
+
+    #gameOver {
+        margin: 1.5rem 1rem;
+        padding: 2rem 1.5rem;
+    }
+}
+</style>
+</head>
+<body>
+
+ <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">UNIT<span>836</span></div>
+            <ul class="nav-links">
+                <li><a href="test_boutton.html">Accueil</a></li>
+                <li><a href="nird_pro.html">NIRD</a></li>
+                <li><a href="Obsolecense_programmer.html">Obsolescence</a></li>
+                <li>Trouver les autres pages caché</li>
+            </ul>
+        </nav>
+    </header>
+
+<h1>🐧 Linux VS Windows 🪟</h1>
+
+<div id="gameContainer">
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div id="score">Score: 0</div>
+</div>
+
+<div class="instructions">
+    🎮 Utilisez les flèches pour diriger le pingouin Linux<br>
+    🪟 Sauvez les ordinateurs de Windows !<br>
+    ⌨️ Appuyez sur ESPACE pour rejouer
+</div>
+
+<div id="gameOver">
+    <h2>Partie terminée !</h2>
+    <p id="finalScore"></p>
+    <button id="restartBtn">Rejouer</button>
+    <p style="font-size:14px; margin-top:1rem; color: #666;">(Vous pouvez aussi appuyer sur ESPACE)</p>
+</div>
+
+<script>
+// ----------------- SONS WEB AUDIO -----------------
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playTone(frequency, duration=0.1, type='square', volume=0.2){
+    const osc = audioCtx.createOscillator();
+    const gainNode = audioCtx.createGain();
+    osc.connect(gainNode);
+    gainNode.connect(audioCtx.destination);
+    gainNode.gain.value = volume;
+    osc.type = type;
+    osc.frequency.value = frequency;
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+}
+
+function playEat(){ playTone(880,0.08,'square',0.3); }
+function playMove(){ playTone(440,0.05,'square',0.15); }
+function playDeath(){ playTone(150,0.3,'square',0.5); playTone(100,0.3,'square',0.5); }
+
+// ----------------- VARIABLES -----------------
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+ctx.imageSmoothingEnabled = false;
+
+const scoreElement = document.getElementById("score");
+const finalScoreElement = document.getElementById("finalScore");
+const gameOverElement = document.getElementById("gameOver");
+const restartBtn = document.getElementById("restartBtn");
+
+const gridSize = 25;
+const tileCount = canvas.width / gridSize;
+
+let snake = [{ x: 10, y: 10 }];
+let dx = 0, dy = 0;
+let nextDirection = null;
+let food = { x: 5, y: 5 };
+let score = 0;
+let running = false;
+let gameEnded = false;
+
+// ----------------- FOND RETRO -----------------
+const stars = [];
+const starCount = 60;
+for(let i=0;i<starCount;i++){
+    stars.push({
+        x: Math.floor(Math.random()*tileCount),
+        y: Math.floor(Math.random()*tileCount),
+        brightness: Math.random()
+    });
+}
+
+// ----------------- PIXEL ART -----------------
+function drawPenguin(x, y){
+    const px = x*gridSize, py = y*gridSize;
+    ctx.fillStyle="#000"; ctx.fillRect(px+3,py+2,gridSize-6,gridSize-4);
+    ctx.fillStyle="#fff"; ctx.fillRect(px+6,py+8,gridSize-12,gridSize-14);
+    ctx.fillStyle="#fff"; ctx.fillRect(px+5,py+5,4,4); ctx.fillRect(px+gridSize-9,py+5,4,4);
+    ctx.fillStyle="#000"; ctx.fillRect(px+7,py+6,2,2); ctx.fillRect(px+gridSize-9,py+6,2,2);
+    ctx.fillStyle="#ff8c00"; ctx.fillRect(px+gridSize/2-2,py+12,4,2); ctx.fillRect(px+gridSize/2-1,py+14,2,2);
+}
+
+function drawSnakeBody(x, y){
+    const px = x * gridSize, py = y * gridSize;
+    ctx.fillStyle = "#003366"; 
+    ctx.fillRect(px + 1, py + 1, gridSize - 2, gridSize - 2);
+    ctx.fillStyle = "#00ffff"; 
+    ctx.fillRect(px + 3, py + 3, gridSize - 6, gridSize - 6);
+}
+function drawWindowsLogo(x,y){
+    const px=x*gridSize, py=y*gridSize, b=8;
+    ctx.fillStyle="#00adef"; ctx.fillRect(px+3,py+3,b,b);
+    ctx.fillStyle="#7fba00"; ctx.fillRect(px+3+b+2,py+3,b,b);
+    ctx.fillStyle="#ffb900"; ctx.fillRect(px+3,py+3+b+2,b,b);
+    ctx.fillStyle="#f25022"; ctx.fillRect(px+3+b+2,py+3+b+2,b,b);
+}
+
+// ----------------- FOND RETRO DESSIN -----------------
+function drawBackground(){
+    ctx.fillStyle="#111";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // Grille rétro
+    ctx.strokeStyle="rgba(255,255,255,0.05)";
+    for(let i=0;i<=tileCount;i++){
+        ctx.beginPath();
+        ctx.moveTo(i*gridSize,0);
+        ctx.lineTo(i*gridSize,canvas.height);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0,i*gridSize);
+        ctx.lineTo(canvas.width,i*gridSize);
+        ctx.stroke();
+    }
+
+    // étoiles/pixels flottants
+    for(let s of stars){
+        ctx.fillStyle=`rgba(0,255,255,${0.2+s.brightness*0.8})`;
+        ctx.fillRect(s.x*gridSize+5, s.y*gridSize+5, 2, 2);
+    }
+}
+
+// ----------------- JEU -----------------
+function drawGame(){
+    drawBackground();
+    snake.forEach((s,i)=> i===0?drawPenguin(s.x,s.y):drawSnakeBody(s.x,s.y));
+    drawWindowsLogo(food.x,food.y);
+}
+
+function moveSnake(){
+    if(nextDirection){ dx = nextDirection.dx; dy = nextDirection.dy; nextDirection = null; }
+    const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+
+    if(head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount){
+        return endGame();
+    }
+
+    for(let s of snake) if(s.x===head.x && s.y===head.y) return endGame();
+
+    snake.unshift(head);
+
+    if(head.x===food.x && head.y===food.y){
+        score++;
+        scoreElement.textContent=`Score: ${score}`;
+        playEat();
+        generateFood();
+    } else {
+        snake.pop();
+    }
+}
+
+function generateFood(){
+    let valid = false;
+    while(!valid){
+        food.x = Math.floor(Math.random()*tileCount);
+        food.y = Math.floor(Math.random()*tileCount);
+        valid = !snake.some(s => s.x===food.x && s.y===food.y);
+    }
+}
+
+function endGame(){
+    running = false;
+    gameEnded = true; // <-- verrouillage du jeu
+    playDeath();
+    let flashes = 6;
+    const freezeAnim = setInterval(()=>{
+        ctx.fillStyle = (flashes%2===0)?"rgba(255,0,0,0.45)":"rgba(255,255,255,0.45)";
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+        flashes--;
+        if(flashes<=0){
+            clearInterval(freezeAnim);
+            gameOverElement.style.display="block";
+            finalScoreElement.textContent=`Vous avez sauvé ${score} ordinateur${score>1?'s':''} !`;
+        }
+    },120);
+}
+
+function resetGame(){
+    snake = [{x:10,y:10}];
+    dx=0; dy=0; nextDirection=null;
+    score=0; scoreElement.textContent="Score: 0";
+    running=false; 
+    gameEnded = false;
+    gameOverElement.style.display="none";
+    generateFood(); drawGame();
+}
+
+function loop(){
+    if(running){
+        playMove();
+        moveSnake();
+    }
+    drawGame();
+}
+
+setInterval(loop,100);
+
+// ----------------- CONTROLES -----------------
+document.addEventListener("keydown", e=>{
+    if(gameEnded) return; 
+
+    if(!running && gameOverElement.style.display==="block"){
+        if(e.key===" ") resetGame();
+        return;
+    }
+
+    if(!running && e.key.startsWith("Arrow")) running=true;
+
+    if(e.key==="ArrowUp" && dy!==1) nextDirection={dx:0,dy:-1};
+    if(e.key==="ArrowDown" && dy!==-1) nextDirection={dx:0,dy:1};
+    if(e.key==="ArrowLeft" && dx!==1) nextDirection={dx:-1,dy:0};
+    if(e.key==="ArrowRight" && dx!==-1) nextDirection={dx:1,dy:0};
+});
+
+restartBtn.onclick = resetGame;
+
+// Initialize
+drawGame();
+</script>
+
+</body>
+</html>
