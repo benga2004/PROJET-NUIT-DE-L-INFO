@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Généralité NIRD | Unit836</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00f2ff;
+            --secondary-color: #667eea;
+            --dark-bg: #0b0d10;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-primary: #e6eef8;
+            --text-secondary: #a0aec0;
+        }
+
+        body {
+            font-family: 'Inter', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: var(--text-primary);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        nav {
+            width: 100%;
+            background: rgba(11, 13, 16, 0.85);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        nav .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            transition: all 0.3s ease;
+        }
+
+        nav .logo:hover {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 4px 12px rgba(0, 242, 255, 0.3));
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-color);
+            background: rgba(0, 242, 255, 0.05);
+        }
+
+        nav ul li a:hover::after {
+            width: 80%;
+        }
+
+        /* HEADER SECTION */
+        .header-section {
+            text-align: center;
+            padding: 4rem 2rem 2rem;
+            background: linear-gradient(180deg, transparent, rgba(0, 242, 255, 0.03));
+        }
+
+        .header-section h1 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-section .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* CARD SECTION */
+        .yaya {
+            background: var(--card-bg);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .yaya::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .yaya:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 48px rgba(0, 242, 255, 0.2);
+            border-color: rgba(0, 242, 255, 0.3);
+        }
+
+        .yaya:hover::before {
+            left: 100%;
+        }
+
+        .yaya h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            text-align: center;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .yaya h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+            border-radius: 2px;
+        }
+
+        .yaya p {
+            font-size: 1.0625rem;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+        }
+
+        .yaya b {
+            color: var(--primary-color);
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 1rem;
+            font-size: 1.125rem;
+        }
+
+        /* LIST STYLING */
+        .yaya p br + br {
+            display: block;
+            margin-top: 1rem;
+        }
+
+        /* FOOTER */
+        footer {
+            background: rgba(11, 13, 16, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.75rem;
+            }
+
+            nav ul li a {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.875rem;
+            }
+
+            .header-section {
+                padding: 3rem 1.5rem 1.5rem;
+            }
+
+            .yaya {
+                padding: 2rem 1.5rem;
+            }
+
+            .yaya h3 {
+                font-size: 1.5rem;
+            }
+
+            .yaya p {
+                font-size: 1rem;
+            }
+        }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .yaya {
+            animation: fadeInUp 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+     <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">UNIT<span>836</span></div>
+            <ul class="nav-links">
+                <li><a href="test_boutton.html">Accueil</a></li>
+                <li><a href="nird_pro.html">NIRD</a></li>
+                <li><a href="Obsolecense_programmer.html">Obsolescence</a></li>
+                <li>Trouver les autres pages caché</li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- HEADER -->
+    <div class="header-section">
+        <h1>NIRD</h1>
+        <p class="subtitle">Numérique Inclusif, Responsable et Durable</p>
+    </div>
+
+    <!-- CONTENEUR PRINCIPAL -->
+    <div class="container">
+        <section class="yaya">
+            <h3>Généralité sur NIRD</h3>
+            <p>
+                NIRD signifie Numérique Inclusif, Responsable et Durable. Il s'agit d'une démarche visant à repenser l'usage du numérique dans les établissements scolaires pour le rendre plus libre, plus écologique et plus accessible à tous.<br><br>
+
+                À l'heure où de nombreux systèmes d'exploitation et logiciels propriétaires atteignent la fin de leur support, NIRD propose une alternative innovante pour les écoles, collèges et lycées, en s'appuyant sur trois axes principaux :<br><br>
+
+                <b>Inclusion numérique :</b><br>
+                L'objectif est de garantir à tous les élèves un accès équitable au numérique, même pour ceux dont les familles ne peuvent pas investir dans du matériel ou des licences coûteuses. Cela permet de réduire la fracture numérique et de favoriser l'égalité des chances dans l'apprentissage.<br><br>
+
+                <b>Responsabilité et souveraineté :</b><br>
+                NIRD encourage l'utilisation de logiciels libres et open source. Cela permet aux établissements et aux utilisateurs de contrôler l'usage des outils numériques, de protéger leurs données, et de ne pas dépendre de solutions propriétaires. Les élèves peuvent ainsi apprendre à utiliser, modifier et partager des logiciels librement, ce qui développe leur autonomie et leur esprit critique.<br><br>
+
+                <b>Durabilité et écocitoyenneté :</b><br>
+                Cette démarche s'inscrit dans une logique écologique et économique : prolonger la durée de vie des ordinateurs, reconditionner le matériel, réduire l'obsolescence et limiter les déchets électroniques. Elle sensibilise également les jeunes à la responsabilité environnementale liée au numérique.<br><br>
+
+                <b>Pourquoi NIRD est important :</b><br>
+                Il favorise l'accès au numérique pour tous les élèves.<br>
+                Il réduit les coûts liés aux licences et à l'achat de matériel neuf.<br>
+                Il contribue à la protection de l'environnement grâce à la réduction des déchets électroniques.<br>
+                Il forme les élèves et le personnel éducatif à des pratiques numériques responsables et durables.<br>
+                Il encourage l'esprit d'autonomie, de partage et de collaboration grâce au logiciel libre.<br><br>
+
+                <b>Objectifs de la démarche :</b><br>
+                Promouvoir un numérique respectueux de l'environnement et accessible à tous.<br>
+                Encourager les établissements scolaires à adopter des systèmes libres et reconditionnés.<br>
+                Former les élèves à l'usage de solutions numériques ouvertes et responsables.<br>
+                Créer une communauté éducative consciente des enjeux écologiques, économiques et sociaux du numérique.
+            </p>
+        </section>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2025 - Unit836 | Tous droits réservés</p>
+    </footer>
+</body>
+</html>
