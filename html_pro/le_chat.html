@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat-Philosophe Débile</title>
+<style>
+    body {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+        background: linear-gradient(135deg, #ff6b6b, #f7d794, #6a89cc);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .chat-container {
+        background: rgba(255,255,255,0.1);
+        width: 400px;
+        max-width: 90%;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 0 20px rgba(255,255,255,0.5);
+        animation: bounceIn 1s;
+    }
+
+    @keyframes bounceIn {
+        0% { transform: scale(0.5); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    .chat-header {
+        background: #ffdd59;
+        color: #000;
+        padding: 15px;
+        font-weight: bold;
+        text-align: center;
+        font-size: 20px;
+        border-bottom: 2px dashed #fff;
+    }
+
+    .chat-messages {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        color: #fff;
+        min-height: 250px;
+    }
+
+    .chat-message {
+        margin-bottom: 10px;
+        line-height: 1.4;
+    }
+
+    .user-msg {
+        text-align: right;
+        color: #ffdd59;
+    }
+
+    .bot-msg {
+        text-align: left;
+        color: #fff;
+    }
+
+    .chat-input {
+        display: flex;
+        border-top: 2px dashed #fff;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+        background: rgba(255,255,255,0.05);
+        color: #fff;
+    }
+
+    .chat-input button {
+        background: #ff6b6b;
+        border: none;
+        color: #fff;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .chat-input button:hover {
+        background: #ff4757;
+    }
+
+    /* petits clins d'œil absurdes */
+    .bot-msg span {
+        animation: wiggle 2s infinite;
+        display: inline-block;
+    }
+
+    @keyframes wiggle {
+        0% { transform: rotate(0deg); }
+        25% { transform: rotate(5deg); }
+        50% { transform: rotate(-5deg); }
+        75% { transform: rotate(5deg); }
+        100% { transform: rotate(0deg); }
+    }
+</style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">Professeur Gloubiboulga 🤪</div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Pose ta question, si tu oses...">
+        <button onclick="sendMessage()">Envoyer</button>
+    </div>
+</div>
+
+<script>
+const chatMessages = document.getElementById('chatMessages');
+const userInput = document.getElementById('userInput');
+
+// Liste de réponses absurdes
+const absurdReplies = [
+    "Ah ! Voilà une question qui mérite un macaroni dans la figure 🥸",
+    "Si je te répondais, je devrais me transformer en pancake 🥞",
+    "Question intéressante… mais as-tu pensé aux licornes interstellaires ? 🦄✨",
+    "Je ne peux pas répondre… mon chat invisible me regarde 👀",
+    "La réponse est sûrement 42, ou un sandwich au jambon 🥪",
+    "Je philosophe tellement que j’ai oublié la question 🤯",
+    "Demande encore, et je te raconte la vie secrète des chaussettes 🧦",
+    "Ah non, pas toi aussi… parle-moi de fromage ! 🧀",
+    "Tout est relatif… surtout les cupcakes 🧁",
+    "Je médite là-dessus depuis 3 heures, mais j’ai perdu mon cerveau",
+    "Oula… ta question vient d’invoquer un pingouin en roller 🐧🛼",
+    "Je pourrais répondre, mais mon cerveau est parti en pause café ☕🧠",
+    "Attends… je demande l’avis de mon cactus télépathique 🌵✨",
+    "Hmm… c’est complexe. Même ma chaussette gauche n’a pas d'avis 🧦",
+    "Si je te disais la vérité, tu te transformerais en flan caramel 🍮",
+    "J’allais répondre, mais un papillon ninja m’a distrait 🦋🥷",
+    "Argh… ma pensée vient de planter. Redémarrage en cours 🔁",
+    "La réponse est très simple, mais elle appartient aux hamsters du futur 🐹⏳",
+    "J’ai cherché la réponse… et j’ai trouvé un cookie à la place 🍪",
+    "Mon esprit est en mode économie d’énergie. Reviens dans 3 siècles ⚡😴",
+    "Ah ! Excellent ! Mais je ne parle pas le dialecte des nuages aujourd’hui ☁️",
+    "Impossible de répondre… j’ai glissé sur une banane quantique 🍌✨",
+    "Attends, je consulte le Conseil Suprême des Tortues Sages 🐢👑",
+    "La réponse est top secrète. Même moi je ne suis pas autorisé 😶‍🌫️",
+    "Je pourrais répondre, mais j’ai peur d’activer le mode chaos 🍿🔥",
+    "Laisse-moi vérifier… cherche sous le canapé… ah non, rien 😕",
+    "Si j’avais la réponse, je serais déjà en train de danser avec des pingouins 🐧🎶",
+    "Le destin veut que je ne te réponde pas… ou peut-être que j’ai juste la flemme 😌",
+    "Je t’entends… mais j’étais occupé à cuisiner le vide 🍽️🕳️",
+    "J’allais répondre sérieusement, puis une idée débile m’a interrompu 🤡",
+    "Minute… je suis en négociation avec mon cerveau, il demande un cookie 🍪🧠",
+    "Ta question vient d’ouvrir un portail vers le royaume des chaussons volants 👟✨",
+    "Je veux bien répondre, mais mon hamster intérieur n’est pas d’accord 🐹",
+    "Oups… j’ai trébuché sur une idée. Je reviens 🫠",
+    "Je t’écoute, mais mon imagination est partie faire un tour en trottinette 🛴💭",
+    "Attention, si je réponds, un pigeon pourrait devenir président 🐦👑",
+    "Désolé, mon Wi-Fi mental lag un peu aujourd’hui 📡😵",
+    "Je n’ai pas de réponse… mais j’ai un caillou magique si tu veux 🪨✨",
+    "Si je réfléchis trop, je me transforme en soupe alphabet 🍲🔤",
+    "Mon niveau de logique est en maintenance, merci de patienter 🔧🧠",
+    "J’allais répondre, mais une idée m’a fait un croche-patte 🤸‍♂️",
+    "La science dit oui, le bon sens dit non, et moi je mange un muffin 🧁",
+    "Hmm… ma boussole intérieure tourne comme une machine à laver 🧭🌀",
+    "Je peux répondre, mais ça pourrait faire exploser un marshmallow 🍡💥",
+    "Je suis presque sûr que ta question vient du futur… ou d’un frigo intelligent 🧊",
+    "Si je réponds, je perds mon badge officiel de clown philosophe 🤡📜",
+    "Désolé, j’ai mis mon mode sérieux à la machine à laver 👔🧼",
+    "La réponse est évidente… mais elle a décidé de faire grève ✊🤯",
+    "Tout est clair… sauf moi, j’ai oublié mes lunettes de compréhension 🤓",
+    "J’ai essayé de comprendre… mais mon cerveau a fait un bruit bizarre 🔧⚡",
+    
+];
+
+function sendMessage() {
+    const message = userInput.value.trim();
+    if(message === '') return;
+
+    // Affiche le message utilisateur
+    addMessage(message, 'user-msg');
+    userInput.value = '';
+
+    // Réponse du bot après un petit délai
+    setTimeout(() => {
+        const botReply = absurdReplies[Math.floor(Math.random() * absurdReplies.length)];
+        addMessage(botReply, 'bot-msg');
+    }, 500);
+}
+
+function addMessage(message, className) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = 'chat-message ' + className;
+    msgDiv.innerHTML = `<span>${message}</span>`;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Permet d'envoyer le message avec la touche "Entrée"
+userInput.addEventListener('keypress', function(e) {
+    if(e.key === 'Enter') sendMessage();
+});
+</script>
+
+</body>
+</html>
