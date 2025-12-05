@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laser Game - Avec Obstacles</title>
+<style>
+  * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00f2ff;
+            --secondary-color: #667eea;
+            --dark-bg: #0b0d10;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-primary: #e6eef8;
+            --text-secondary: #a0aec0;
+        }
+
+        body {
+            font-family: 'Inter', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: var(--text-primary);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* NAVBAR */
+        nav {
+            width: 100%;
+            background: rgba(11, 13, 16, 0.85);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        nav .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            transition: all 0.3s ease;
+        }
+
+        nav .logo:hover {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 4px 12px rgba(0, 242, 255, 0.3));
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav ul li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        nav ul li a:hover {
+            color: var(--primary-color);
+            background: rgba(0, 242, 255, 0.05);
+        }
+
+        nav ul li a:hover::after {
+            width: 80%;
+        }
+
+        /* HEADER SECTION */
+        .header-section {
+            text-align: center;
+            padding: 4rem 2rem 2rem;
+            background: linear-gradient(180deg, transparent, rgba(0, 242, 255, 0.03));
+        }
+
+        .header-section h1 {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-section .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+  canvas {
+    display:block;
+    margin:0 auto;
+    background:#0f1720;
+    border:4px solid rgba(0,242,255,0.2);
+    border-radius:12px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.6), inset 0 0 80px rgba(0,0,0,0.6);
+  }
+  #ui {
+    position:fixed;
+    top:10px; left:50%;
+    transform:translateX(-50%);
+    background:rgba(11,13,16,0.8);
+    backdrop-filter:blur(8px);
+    padding:1rem 2rem;
+    border-radius:12px;
+    font-weight:600;
+    display:flex; gap:2rem;
+  }
+  #endOverlay {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.8);
+    display:flex; justify-content:center; align-items:center;
+    font-size:1.5rem; color:#fff;
+    display:none;
+  }
+  button {
+    padding:0.5rem 1rem; border:none; border-radius:8px;
+    background:rgba(0,242,255,0.2); color:#fff;
+    font-weight:600; cursor:pointer;
+    transition:0.3s;
+  }
+  button:hover { background:rgba(0,242,255,0.5); }
+
+  /* FOOTER */
+        footer {
+            background: rgba(11, 13, 16, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+</style>
+</head>
+<body>
+  <!-- NAVBAR -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">UNIT<span>836</span></div>
+            <ul class="nav-links">
+                <li><a href="test_boutton.html">Accueil</a></li>
+                <li><a href="nird_pro.html">NIRD</a></li>
+                <li><a href="Obsolecense_programmer.html">Obsolescence</a></li>
+                <li>Trouver les autres pages caché</li>
+            </ul>
+        </nav>
+    </header>
+
+<div id="ui">
+  <div>Score: <span id="score">0</span></div>
+  <div>Vies: <span id="lives">3</span></div>
+</div>
+
+<canvas id="gameCanvas" width="1024" height="640"></canvas>
+
+<div id="endOverlay">
+  <div>
+    <p id="endText"></p>
+    <button onclick="restartGame()">Rejouer</button>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+let mouse = {x: W/2, y: H/2};
+let score = 0;
+let lives = 3;
+let running = true;
+let leftPressed = false;
+let rightPressed = false;
+
+const player = {x: W/2, y: H-50, r:20, speed:300};
+const lasers = [];
+const enemies = [];
+const obstacles = [];
+
+// Charger les images
+const linuxImg = new Image();
+linuxImg.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/200px-Tux.svg.png';
+const windowsImg = new Image();
+windowsImg.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/200px-Windows_logo_-_2012.svg.png';
+
+function rand(min,max){ return Math.random()*(max-min)+min; }
+function dist(x1,y1,x2,y2){ return Math.hypot(x2-x1,y2-y1); }
+
+document.addEventListener('mousemove',e=>{
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = (e.clientX-rect.left)*(canvas.width/rect.width);
+  mouse.y = (e.clientY-rect.top)*(canvas.height/rect.height);
+});
+
+document.addEventListener('mousedown',()=>{
+  lasers.push({x:player.x, y:player.y, dx:mouse.x-player.x, dy:mouse.y-player.y, speed:800});
+});
+
+// 🔥 Tir avec la molette
+document.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    lasers.push({
+        x: player.x,
+        y: player.y,
+        dx: mouse.x - player.x,
+        dy: mouse.y - player.y,
+        speed: 800
+    });
+}, { passive: false });
+
+// Mouvement avec 'q' et 'd'
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'q') leftPressed = true;
+  if(e.key === 'd') rightPressed = true;
+});
+
+document.addEventListener('keyup', (e) => {
+  if(e.key === 'q') leftPressed = false;
+  if(e.key === 'd') rightPressed = false;
+});
+
+function spawnEnemy(){
+  const x = rand(50, W-50);
+  const y = -20;
+  const size = rand(12,28);
+  const speed = rand(50,150);
+  enemies.push({x,y,r:size,vy:speed});
+}
+
+function spawnObstacle(){
+  const w = rand(60,150);
+  const h = rand(20,60);
+  const x = rand(50, W-50-w);
+  const y = -h;
+  const vy = rand(40,100);
+  obstacles.push({x,y,w,h,vy});
+}
+
+function update(dt){
+  if(!running) return;
+
+  // Mouvement du joueur
+  if(leftPressed) player.x -= player.speed * dt;
+  if(rightPressed) player.x += player.speed * dt;
+  player.x = Math.max(player.r, Math.min(W - player.r, player.x));
+
+  // Update lasers
+  for(let i=lasers.length-1;i>=0;i--){
+    const l = lasers[i];
+    const len = Math.hypot(l.dx,l.dy);
+    l.x += l.dx/len*l.speed*dt;
+    l.y += l.dy/len*l.speed*dt;
+    if(l.x<0||l.x>W||l.y<0||l.y>H) lasers.splice(i,1);
+  }
+
+  // Update enemies
+  for(let i=enemies.length-1;i>=0;i--){
+    const e = enemies[i];
+    e.y += e.vy*dt;
+    if(e.y>H+e.r){ enemies.splice(i,1); lives--; updateUI(); if(lives<=0) gameOver(false);}
+  }
+
+  // Update obstacles
+  for(let i=obstacles.length-1;i>=0;i--){
+    const o = obstacles[i];
+    o.y += o.vy*dt;
+    if(o.y>H+o.h){ obstacles.splice(i,1); }
+  }
+
+  // Check collisions
+  for(let i=lasers.length-1;i>=0;i--){
+    const l = lasers[i];
+
+    // Enemy collision
+    for(let j=enemies.length-1;j>=0;j--){
+      const e = enemies[j];
+      if(dist(l.x,l.y,e.x,e.y)<e.r){
+        enemies.splice(j,1);
+        lasers.splice(i,1);
+        score += 10;
+        updateUI();
+        break;
+      }
+    }
+
+    // Obstacle collision
+    for(let o of obstacles){
+      if(l.x>o.x && l.x<o.x+o.w && l.y>o.y && l.y<o.y+o.h){
+        lasers.splice(i,1);
+        break;
+      }
+    }
+  }
+
+  if(Math.random()<0.02) spawnEnemy();
+  if(Math.random()<0.01) spawnObstacle();
+}
+
+function updateUI(){
+  document.getElementById('score').textContent = score;
+  document.getElementById('lives').textContent = lives;
+}
+
+function render(){
+  ctx.clearRect(0,0,W,H);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  for(let x=0;x<W;x+=40){
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  }
+  for(let y=0;y<H;y+=40){
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  }
+
+  // Obstacles
+  for(let o of obstacles){
+    ctx.fillStyle='#ff0000';
+    ctx.fillRect(o.x,o.y,o.w,o.h);
+  }
+
+  // Enemies (logos Windows)
+  for(let e of enemies){
+    if(windowsImg.complete){
+      ctx.drawImage(windowsImg, e.x - e.r, e.y - e.r, e.r * 2, e.r * 2);
+    } else {
+      ctx.fillStyle='#ff5555';
+      ctx.beginPath(); ctx.arc(e.x,e.y,e.r,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  // Lasers
+  for(let l of lasers){
+    ctx.strokeStyle='#00f2ff';
+    ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.moveTo(l.x-l.dx/Math.hypot(l.dx,l.dy)*10,l.y-l.dy/Math.hypot(l.dx,l.dy)*10);
+    ctx.lineTo(l.x,l.y);
+    ctx.stroke();
+  }
+
+  // Player (logo Linux)
+  if(linuxImg.complete){
+    ctx.drawImage(linuxImg, player.x - player.r, player.y - player.r, player.r * 2, player.r * 2);
+  } else {
+    ctx.fillStyle='#00f2ff';
+    ctx.beginPath(); ctx.arc(player.x,player.y,player.r,0,Math.PI*2); ctx.fill();
+  }
+
+  // Gun direction
+  ctx.strokeStyle='#ffffff';
+  ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(player.x,player.y);
+  ctx.lineTo(
+    player.x+Math.cos(Math.atan2(mouse.y-player.y, mouse.x-player.x))*40,
+    player.y+Math.sin(Math.atan2(mouse.y-player.y, mouse.x-player.x))*40
+  );
+  ctx.stroke();
+}
+
+let lastTime = performance.now();
+function loop(now){
+  const dt = (now-lastTime)/1000;
+  lastTime=now;
+  update(dt);
+  render();
+  requestAnimationFrame(loop);
+}
+
+function gameOver(victory){
+  running=false;
+  document.getElementById('endOverlay').style.display='flex';
+  document.getElementById('endText').textContent = victory ? 'Victoire!' : 'Défaite!';
+}
+
+function restartGame(){
+  score=0; lives=3; lasers.length=0; enemies.length=0; obstacles.length=0;
+  updateUI();
+  running=true;
+  document.getElementById('endOverlay').style.display='none';
+}
+
+requestAnimationFrame(loop);
+</script>
+ <!-- FOOTER -->
+    <footer>
+        <p>© 2025 - Unit836 | Tous droits réservés</p>
+    </footer>
+</body>
+</html>
