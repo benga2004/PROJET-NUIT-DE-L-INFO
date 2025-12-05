@@ -1,0 +1,360 @@
+/* ============================================
+   VARIABLES CSS GLOBALES
+   ============================================ */
+:root {
+    --primary-color: #00f2ff;
+    --secondary-color: #667eea;
+    --accent-color: #764ba2;
+    --dark-bg: #0b0d10;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --text-primary: #e6eef8;
+    --text-secondary: #a0aec0;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ============================================
+   NAVBAR PROFESSIONNELLE
+   ============================================ */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(11, 13, 16, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: var(--shadow-md);
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.logo, .logo1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    transition: var(--transition);
+}
+
+.logo span, .logo1 span {
+    color: var(--primary-color);
+    font-weight: 800;
+}
+
+.logo:hover, .logo1:hover {
+    transform: translateY(-2px);
+    filter: drop-shadow(0 4px 12px rgba(0, 242, 255, 0.3));
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+    align-items: center;
+}
+
+.nav-links li a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-links li a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: var(--transition);
+    transform: translateX(-50%);
+}
+
+.nav-links li a:hover {
+    color: var(--primary-color);
+    background: rgba(0, 242, 255, 0.05);
+}
+
+.nav-links li a:hover::after {
+    width: 80%;
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+    text-align: center;
+    padding: 6rem 2rem 4rem;
+    background: linear-gradient(180deg, transparent, rgba(0, 242, 255, 0.03));
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero h1 span {
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* ============================================
+   CONTAINER & SECTIONS
+   ============================================ */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+}
+
+.card, .yaya {
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+}
+
+.card:hover, .yaya:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(0, 242, 255, 0.2);
+}
+
+.card h6, .yaya h3 {
+    font-size: 1.875rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.card p, .yaya p {
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.bold {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* ============================================
+   LOGO ANIMATIONS
+   ============================================ */
+.logo-image {
+    width: 200px;
+    height: auto;
+    filter: drop-shadow(0 8px 24px rgba(0, 242, 255, 0.3));
+    transition: var(--transition);
+}
+
+.logo-image:hover {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(0 12px 32px rgba(0, 242, 255, 0.5));
+}
+
+.linux-logo {
+    width: 150px;
+    height: 150px;
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/200px-Tux.svg.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+    transition: var(--transition);
+    filter: drop-shadow(0 4px 16px rgba(0, 242, 255, 0.2));
+    margin: 2rem auto;
+}
+
+.linux-logo:hover {
+    transform: scale(1.15) rotate(-5deg);
+    filter: drop-shadow(0 8px 24px rgba(0, 242, 255, 0.4));
+}
+
+/* ============================================
+   WAVE EFFECTS
+   ============================================ */
+.wave {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(180deg, transparent, rgba(0, 242, 255, 0.05));
+    opacity: 0.3;
+    animation: wave 10s linear infinite;
+    pointer-events: none;
+}
+
+.wave:nth-child(2) {
+    animation-delay: -3s;
+    opacity: 0.2;
+}
+
+.wave:nth-child(3) {
+    animation-delay: -6s;
+    opacity: 0.1;
+}
+
+@keyframes wave {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* ============================================
+   PARTICLES
+   ============================================ */
+.particle {
+    position: fixed;
+    width: 4px;
+    height: 4px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0.6;
+    animation: float 20s linear infinite;
+}
+
+.particle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+.particle:nth-child(2) { top: 60%; left: 80%; animation-delay: 4s; }
+.particle:nth-child(3) { top: 40%; left: 40%; animation-delay: 8s; }
+.particle:nth-child(4) { top: 80%; left: 10%; animation-delay: 12s; }
+.particle:nth-child(5) { top: 20%; left: 90%; animation-delay: 16s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+    50% { transform: translateY(-30px) scale(1.5); opacity: 0.8; }
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer {
+    background: rgba(11, 13, 16, 0.9);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    text-align: center;
+    margin-top: 4rem;
+}
+
+footer p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .nav-links li a {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .hero {
+        padding: 4rem 1.5rem 3rem;
+    }
+
+    .card, .yaya {
+        padding: 1.5rem;
+    }
+
+    .card h6, .yaya h3 {
+        font-size: 1.5rem;
+    }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+.text-center {
+    text-align: center;
+}
+
+.mt-4 {
+    margin-top: 2rem;
+}
+
+.mb-4 {
+    margin-bottom: 2rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.6s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
